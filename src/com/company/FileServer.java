@@ -22,20 +22,30 @@ public class FileServer implements Runnable {
             System.out.println("File Server");
             in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
             out = (sock.getOutputStream()) ;
+            //out.write("Hello".getBytes());
 //            System.out.println(in.readLine());
 //                if (in.readLine().isEmpty()){
 //                    errorView(out);
 //                    return;
 //                }
-            String enteredString = in.readLine();
-            System.out.println(enteredString);
-            String[] identifyInput = enteredString.split(" ");
-            System.out.println(Arrays.toString(identifyInput));
-            chooser(identifyInput[1]);
-            //basicView(out);
-            out.flush();
-            out.close();
+            String enteredString="";
+            String reading;
+            while(!(reading= in.readLine()).isEmpty()) {
+                System.out.println(reading);
+                enteredString = enteredString + reading;
+            }
+            System.out.println("Entered String: " +enteredString);
+            if (!enteredString.equals(null)) {
+                String[] identifyInput = enteredString.split(" ");
+                System.out.println(Arrays.toString(identifyInput));
+                chooser(identifyInput[1]);
+                //basicView(out);
+                out.flush();
+                out.close();
+            }
         }catch (IOException e){
+            System.out.println(e.getMessage());
+        }catch (NullPointerException e){
             System.out.println(e.getMessage());
         }
         try {
@@ -45,15 +55,16 @@ public class FileServer implements Runnable {
 
 
     private void basicView(OutputStream out){
-        String listingHeader = "<pre><img src=\"\" alt=\"Icon \"> <a href=\"?C=N;O=D\">Name</a>                    <a href=\"?C=M;O=A\">Last modified</a>                       <a href=\"?C=S;O=A\">Size</a>     <a href=\"?C=D;O=A\">Description</a><hr><img src=\"\" alt=\"[DIR]\"> <a href=\""+hello.getCurrDir()+"\">Parent Directory</a>                             -   \n";
+        String listingHeader = "<pre><img src=\"\" alt=\"Icon \"> <a href=\"?C=N;O=D\">Name</a>                    <a href=\"?C=M;O=A\">Last modified</a>                       <a href=\"?C=S;O=A\">Size</a>     <a href=\"?C=D;O=A\">Description</a><hr>                            -   \n";
         String sendHtml = hello.getHtmlCode();
         String formatHeader = hello.formatHtmlHeader();
         System.out.println("Current Dir: "+hello.getCurrDir());
         int length = listingHeader.length()+sendHtml.length()+formatHeader.length()+9;
         try {
-            out.write("HTTP/1.1 200 OK".getBytes());
-            out.write("Content-Type: text/html".getBytes());
-            out.write(("Content-Length: " + length).getBytes());
+
+            out.write("HTTP/1.1 200 OK\n".getBytes());
+            out.write("Content-Type: text/html\n".getBytes());
+            out.write(("Content-Length: " + length+"\n").getBytes());
             System.out.println("Content-Length: " + length);
             out.write("\r\n".getBytes());
             out.write(formatHeader.getBytes());
@@ -68,22 +79,21 @@ public class FileServer implements Runnable {
     private void folderView(OutputStream out,String folder){
         System.out.println("Get Folder: " + folder);
         hello.setCurrDir(folder);
-        String listingHeader = "<pre><img src=\"\" alt=\"Icon \"> <a href=\"?C=N;O=D\">Name</a>                    <a href=\"?C=M;O=A\">Last modified</a>                       <a href=\"?C=S;O=A\">Size</a>     <a href=\"?C=D;O=A\">Description</a><hr><img src=\"\" alt=\"[DIR]\"> <a href=\""+hello.getCurrDir()+"\">Parent Directory</a>                             -   \n";
+        String listingHeader = "<pre><img src=\"\" alt=\"Icon \"> <a href=\"?C=N;O=D\">Name</a>                    <a href=\"?C=M;O=A\">Last modified</a>                       <a href=\"?C=S;O=A\">Size</a>     <a href=\"?C=D;O=A\">Description</a><hr><img src=\"\" alt=\"[DIR]\"> <a href=\""+hello.getParentDir()+"\">Parent Directory</a>                             -   \n";
         String sendHtml = hello.getHtmlCode();
         String formatHeader = hello.formatHtmlHeader();
-        int length = listingHeader.length()+sendHtml.length()+formatHeader.length()+9+9999999;
+        int length = listingHeader.length()+sendHtml.length()+formatHeader.length()+9;
         System.out.println("Current Dir: "+hello.getCurrDir());
         try {
-            out.write("HTTP/1.1 200 OK".getBytes());
-            out.write("Content-Type: text/html".getBytes());
-            out.write(("Content-Length: " + length).getBytes());
+            out.write("HTTP/1.1 200 OK\n".getBytes());
+            out.write("Content-Type: text/html\n".getBytes());
+            out.write(("Content-Length: " + length+"\n").getBytes());
             System.out.println("Content-Length: " + length);
             out.write("\r\n".getBytes());
             out.write(formatHeader.getBytes());
             out.write(listingHeader.getBytes());
-//            out.write(sendHtml.getBytes());
+            out.write(sendHtml.getBytes());
             out.write("</pre>".getBytes());
-            //out.flush();
         }catch (IOException e){
             System.out.println(e.getMessage().toString());
         }
@@ -92,17 +102,17 @@ public class FileServer implements Runnable {
     private void getfile(OutputStream out,String fileName){
         System.out.println("Get File: " + fileName);
         hello.setCurrDir(fileName);
-        //String listingHeader = "<pre><img src=\"\" alt=\"Icon \"> <a href=\"?C=N;O=D\">Name</a>                    <a href=\"?C=M;O=A\">Last modified</a>                       <a href=\"?C=S;O=A\">Size</a>     <a href=\"?C=D;O=A\">Description</a><hr><img src=\"\" alt=\"[DIR]\"> <a href=\""+hello.getCurrDir()+"\">Parent Directory</a>                             -   \n";
-        //String sendHtml = hello.getHtmlCode();
-        //String formatHeader = hello.formatHtmlHeader();
-        //int length = listingHeader.length()+sendHtml.length()+formatHeader.length()+9;
+//        String listingHeader = "<pre><img src=\"\" alt=\"Icon \"> <a href=\"?C=N;O=D\">Name</a>                    <a href=\"?C=M;O=A\">Last modified</a>                       <a href=\"?C=S;O=A\">Size</a>     <a href=\"?C=D;O=A\">Description</a><hr><img src=\"\" alt=\"[DIR]\"> <a href=\""+hello.getCurrDir()+"\">Parent Directory</a>                             -   \n";
+//        String sendHtml = hello.getHtmlCode();
+//        String formatHeader = hello.formatHtmlHeader();
+//        int length = listingHeader.length()+sendHtml.length()+formatHeader.length()+9;
         byte[] data = hello.getFile(fileName);
         System.out.println(hello.getMIMEtype(fileName.substring(fileName.lastIndexOf("/") + 1)));
         try {
 
-            out.write("HTTP/1.1 200 OK".getBytes());
-            out.write(("Content-Type: " + hello.getMIMEtype(fileName.substring(fileName.lastIndexOf("/") + 1))).getBytes());
-            out.write(("Content-Length: " + data.length).getBytes());
+            out.write("HTTP/1.1 200 OK\n".getBytes());
+            out.write(("Content-Type: " + hello.getMIMEtype(fileName.substring(fileName.lastIndexOf("/") + 1))+"\n").getBytes());
+            out.write(("Content-Length: " + data.length+"\n").getBytes());
             System.out.println("Content-Length: " + data.length);
             out.write("\r\n".getBytes());
             System.out.println(data);

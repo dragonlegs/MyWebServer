@@ -14,11 +14,26 @@ import java.util.Date;
 public class FileList {
     private String htmlCode="";
     private String currDir=System.getProperty("user.dir");
+    private String parentDir="";
 
 public void setCurrDir(String dir){
     currDir = currDir + dir;
-    System.out.println(currDir);
+    System.out.println("Current DIR: "+ currDir);
+    setParentDir(dir);
 
+}
+
+private void setParentDir(String dir){
+    System.out.println("SystemProp: " + System.getProperty("user.dir"));
+    Path path = Paths.get(dir);
+    System.out.println(path.getParent());
+    parentDir = path.getParent().toString();
+
+}
+
+public String getParentDir(){
+
+    return parentDir;
 }
 
 public byte[] getFile(String fileName){
@@ -44,17 +59,20 @@ public void setFiles(){
     File f1 = new File(currDir);
     File[] strFileDirs = f1.listFiles();
     for (int i =0;i< strFileDirs.length;i++){
-        if (strFileDirs[i].isDirectory()) {
-            System.out.println("Directory: " + strFileDirs[i].toString());
-            htmlCode = htmlCode + formatHtmlFile(strFileDirs[i], "DIR");
-            System.out.println(htmlCode);
+        //Does not display files/folders that start with "." as this are normally contain sensitive info
+        if(strFileDirs[i].getName().startsWith(".")){
+
+            System.out.println("Found Hidden File/Folder: " + strFileDirs[i].getName());
+
+        }
+        else if (strFileDirs[i].isDirectory()) {
+            System.out.println("Directory: " + strFileDirs[i].toString()+"/");
+            htmlCode = htmlCode + formatHtmlFile(strFileDirs[i], "DIR","/");
+      //      System.out.println(htmlCode);
         }
         else if(strFileDirs[i].isFile()) {
-            //System.out.println("File: " + strFileDirs[i].toString());
-            //System.out.println(strFileDirs[i].getAbsolutePath());
-            //getMIMEtype(strFileDirs[i].getName());
-            htmlCode = htmlCode + formatHtmlFile(strFileDirs[i], getMIMEtype(strFileDirs[i].getName()));
-            System.out.println(htmlCode);
+                htmlCode = htmlCode + formatHtmlFile(strFileDirs[i], getMIMEtype(strFileDirs[i].getName()),"");
+    //        System.out.println(htmlCode);
         }
 
     }
@@ -62,13 +80,17 @@ public void setFiles(){
 
 }
 
-    public String formatHtmlFile(File input, String mimeType){
+    public String formatHtmlFile(File input, String mimeType,String enter){
         Date lastModified = new Date(input.lastModified());
         int spaceing =5;
-
-        return "<img src=\"\" alt=\"["+mimeType.split("/")[0]+"]\">  <a href=\""+input.getName()+"\">"+input.getName()+"</a>"+"           "+lastModified.toString()+"     "
-                  +input.length()+"\n";
-
+//try {
+        System.out.println("Parent: " + input.getParent());
+    return "<img src=\"\" alt=\"[" + mimeType.split("/")[0] + "]\">  <a href=\"" + input.getName()+enter+ "\">" + input.getName() + "</a>" + "           " + lastModified.toString() + "     "
+            + input.length() + "\n";
+//}catch (IOException e){
+//    System.out.println(e.getMessage());
+//    return"";
+//}
     }
     public String formatHtmlHeader(){
 
@@ -122,7 +144,7 @@ public void setFiles(){
             case "html":
                 return "text/html";
             default :
-                return "text/plain";
+                return "application/octet-stream";
 
         }
 
