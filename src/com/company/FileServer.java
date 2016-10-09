@@ -134,9 +134,13 @@ public class FileServer implements Runnable {
        else if (input.contains("/") && input.contains(".")){
            getfile(out,input);
        }
+       else if (input.contains("/cgi/birthday")){
+           System.out.println("Do calculations");
+       }
        else if (input.contains("/")){
            folderView(out,input);
        }
+
         else{
            errorView(out);
        }
