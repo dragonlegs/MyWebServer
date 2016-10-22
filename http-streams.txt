@@ -1,0 +1,41 @@
+telnet localhost 2540
+Trying ::1...
+Connected to localhost.
+Escape character is '^]'.
+/
+GET / HTTP/1.1
+
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 1332
+
+<h1>Index of /Users/Hemanth/IdeaProjects/MyWebServer</h1><pre><img src="" alt="Icon "> <a href="?C=N;O=D">Name</a>                    <a href="?C=M;O=A">Last modified</a>                       <a href="?C=S;O=A">Size</a>     <a href="?C=D;O=A">Description</a><hr>                            -
+<img src="" alt="[text]">  <a href="checklist-mywebserver.html">checklist-mywebserver.html</a>           Sun Oct 09 15:12:31 CDT 2016     8177
+<img src="" alt="[image]">  <a href="chicken.jpeg">chicken.jpeg</a>           Sat Oct 08 10:38:22 CDT 2016     14409
+<img src="" alt="[image]">  <a href="egg.jpeg">egg.jpeg</a>           Sat Oct 08 11:58:30 CDT 2016     30209
+<img src="" alt="[text]">  <a href="file.html">file.html</a>           Sun Oct 09 15:11:13 CDT 2016     329
+<img src="" alt="[application]">  <a href="MyWebServer.iml">MyWebServer.iml</a>           Wed Oct 05 10:33:03 CDT 2016     425
+<img src="" alt="[DIR]">  <a href="out/">out</a>           Wed Oct 05 10:45:53 CDT 2016     102
+<img src="" alt="[text]">  <a href="SampleText.txt">SampleText.txt</a>           Sat Oct 08 13:34:39 CDT 2016     1375
+<img src="" alt="[text]">  <a href="script.html">script.html</a>           Sat Oct 08 20:01:32 CDT 2016     688
+<img src="" alt="[DIR]">  <a href="src/">src</a>           Sat Oct 08 17:51:21 CDT 2016     102
+</pre>Connection closed by foreign host.
+
+
+curl localhost:2540/out -v
+*   Trying ::1...
+* Connected to localhost (::1) port 2540 (#0)
+> GET /out HTTP/1.1
+> Host: localhost:2540
+> User-Agent: curl/7.43.0
+> Accept: */*
+>
+< HTTP/1.1 200 OK
+< Content-Type: text/html
+< Content-Length: 477
+<
+<h1>Index of /Users/Hemanth/IdeaProjects/MyWebServer/out</h1><pre><img src="" alt="Icon "> <a href="?C=N;O=D">Name</a>                    <a href="?C=M;O=A">Last modified</a>                       <a href="?C=S;O=A">Size</a>     <a href="?C=D;O=A">Description</a><hr><img src="" alt="[DIR]"> <a href="/">Parent Directory</a>                             -
+<img src="" alt="[DIR]">  <a href="production/">production</a>           Wed Oct 05 10:45:53 CDT 2016     102
+* transfer closed with 3 bytes remaining to read
+* Closing connection 0
+curl: (18) transfer closed with 3 bytes remaining to read

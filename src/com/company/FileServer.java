@@ -30,22 +30,30 @@ public class FileServer implements Runnable {
 //                }
             String enteredString="";
             String reading;
+            //Read all of the input message until null or ""
             while(!(reading= in.readLine()).isEmpty()) {
-                System.out.println(reading);
+                //System.out.println(reading);
                 enteredString = enteredString + reading;
             }
             System.out.println("Entered String: " +enteredString);
             if (!enteredString.equals(null)) {
                 String[] identifyInput = enteredString.split(" ");
-                System.out.println(Arrays.toString(identifyInput));
-                chooser(identifyInput[1]);
+                //System.out.println(Arrays.toString(identifyInput));
+                if (identifyInput[0].isEmpty()){
+                    chooser("error");
+                }else {
+                    chooser(identifyInput[1]);
+                }
                 //basicView(out);
                 out.flush();
                 out.close();
             }
         }catch (IOException e){
+            errorView(out);
             System.out.println(e.getMessage());
+
         }catch (NullPointerException e){
+            errorView(out);
             System.out.println(e.getMessage());
         }
         try {
@@ -53,7 +61,7 @@ public class FileServer implements Runnable {
         }catch (IOException e){System.out.println(e.getMessage());}
     }
 
-
+//Displays root directory
     private void basicView(OutputStream out){
         String listingHeader = "<pre><img src=\"\" alt=\"Icon \"> <a href=\"?C=N;O=D\">Name</a>                    <a href=\"?C=M;O=A\">Last modified</a>                       <a href=\"?C=S;O=A\">Size</a>     <a href=\"?C=D;O=A\">Description</a><hr>                            -   \n";
         String sendHtml = hello.getHtmlCode();
@@ -76,6 +84,8 @@ public class FileServer implements Runnable {
         }
 
     }
+
+    //Display subfolder files
     private void folderView(OutputStream out,String folder){
         System.out.println("Get Folder: " + folder);
         hello.setCurrDir(folder);
@@ -98,7 +108,7 @@ public class FileServer implements Runnable {
             System.out.println(e.getMessage().toString());
         }
     }
-
+    //Send File
     private void getfile(OutputStream out,String fileName){
         System.out.println("Get File: " + fileName);
         hello.setCurrDir(fileName);
@@ -115,7 +125,7 @@ public class FileServer implements Runnable {
             out.write(("Content-Length: " + data.length+"\n").getBytes());
             System.out.println("Content-Length: " + data.length);
             out.write("\r\n".getBytes());
-            System.out.println(data);
+            //System.out.println("Data"+data);
             out.write(data);
             //out.println(formatHeader);
             //out.println(listingHeader);
@@ -123,24 +133,30 @@ public class FileServer implements Runnable {
             //out.println("</pre>");
         }catch (IOException e){
             System.out.println(e.getMessage());
+            errorView(out);
         }
 
     }
-
+//Read Get statement and direct them towards current destination
     private void chooser(String input){
         System.out.println(input);
+        //If its root
        if (input.equals("/"))
            basicView(out);
+       //if it contains folder and . which is for file with ext
        else if (input.contains("/") && input.contains(".")){
            getfile(out,input);
        }
+       //Redirect for birthday what happens in script
        else if (input.contains("/cgi/birthday")){
            System.out.println("Do calculations");
+           Birthday guess = new Birthday(input,out);
        }
+       //If it contains folder only
        else if (input.contains("/")){
            folderView(out,input);
        }
-
+        //If all else fails 500 error
         else{
            errorView(out);
        }
@@ -148,13 +164,13 @@ public class FileServer implements Runnable {
 
 
     }
-
+//Default 500 server error if anything goes wrong
     public void errorView(OutputStream out){
         String error = "<h1>500 Error</h1>";
         try {
-            out.write("HTTP/1.1 500".getBytes());
-            out.write("Content-Type: text/html".getBytes());
-            out.write((("Content-Length: " + error.length()).getBytes()));
+            out.write("HTTP/1.1 500\n".getBytes());
+            out.write("Content-Type: text/html\n".getBytes());
+            out.write((("Content-Length: " + error.length()+"\n").getBytes()));
             out.write("\r\n".getBytes());
             out.write(error.getBytes());
         }catch (IOException e){

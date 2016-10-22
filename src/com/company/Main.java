@@ -1,16 +1,45 @@
 package com.company;
 
+/*--------------------------------------------------------
+
+1. Name / Date: Hemanth Ande Oct 9
+
+2. Java 1.8
+
+3.
+
+> javac *.java
+
+
+4. Precise examples / instructions to run this program:
+
+Run it in folder you wish to serve
+
+5. List of files needed for running the program.
+
+ a. checklist.html
+ b. Birthday.java
+ c. FileList.java
+ d. Main.java
+
+5. Notes:
+
+e.g.:
+
+Unable to make all files/folders work in chrome
+
+----------------------------------------------------------*/
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.TimeUnit;
 
 public class Main {
     private static int counter =0;
 
     public static void main(String[] args) {
-	// write your code here
-        int q_len = 6;
+//  Uses port 2540
+       int q_len = 6;
         int port = 2540;
         Socket sock;
         try {

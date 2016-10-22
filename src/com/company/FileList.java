@@ -4,8 +4,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Array;
-import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -18,15 +16,15 @@ public class FileList {
 
 public void setCurrDir(String dir){
     currDir = currDir + dir;
-    System.out.println("Current DIR: "+ currDir);
+    //System.out.println("Current DIR: "+ currDir);
     setParentDir(dir);
 
 }
 
 private void setParentDir(String dir){
-    System.out.println("SystemProp: " + System.getProperty("user.dir"));
+    //System.out.println("SystemProp: " + System.getProperty("user.dir"));
     Path path = Paths.get(dir);
-    System.out.println(path.getParent());
+    //System.out.println(path.getParent());
     parentDir = path.getParent().toString();
 
 }
@@ -41,7 +39,7 @@ public byte[] getFile(String fileName){
 
 
         Path path = Paths.get(currDir);
-        System.out.println(path.toAbsolutePath().toString());
+        //System.out.println(path.toAbsolutePath().toString());
         byte[] data = Files.readAllBytes(path);
         return data;
     }catch (IOException e){
@@ -55,6 +53,7 @@ public String getHtmlCode(){
     return htmlCode;
 }
 
+//Gets List of files and folders in DIR
 public void setFiles(){
     File f1 = new File(currDir);
     File[] strFileDirs = f1.listFiles();
@@ -79,18 +78,14 @@ public void setFiles(){
 
 
 }
-
+    //Generated HTML for hyperlink files/folders
     public String formatHtmlFile(File input, String mimeType,String enter){
         Date lastModified = new Date(input.lastModified());
         int spaceing =5;
-//try {
-        System.out.println("Parent: " + input.getParent());
+        //System.out.println("Parent: " + input.getParent());
     return "<img src=\"\" alt=\"[" + mimeType.split("/")[0] + "]\">  <a href=\"" + input.getName()+enter+ "\">" + input.getName() + "</a>" + "           " + lastModified.toString() + "     "
             + input.length() + "\n";
-//}catch (IOException e){
-//    System.out.println(e.getMessage());
-//    return"";
-//}
+
     }
     public String formatHtmlHeader(){
 
@@ -107,25 +102,24 @@ public void setFiles(){
 //        System.out.println("Received File:");
 //        return new File();
 //    }
-    private String getSpace(String input,int space){
-        int length = input.length();
-        System.out.println("Length: " + length);
-        String returnString ="";
-        if (length < space) {
-            for (int i =0;i <= space-length;i++){
-                returnString = returnString + " ";
-            }
-        }
-        //System.out.println("ReturnString is: " + returnString);
-        return returnString;
+//    private String getSpace(String input,int space){
+//        int length = input.length();
+//        System.out.println("Length: " + length);
+//        String returnString ="";
+//        if (length < space) {
+//            for (int i =0;i <= space-length;i++){
+//                returnString = returnString + " ";
+//            }
+//        }
+//        //System.out.println("ReturnString is: " + returnString);
+//        return returnString;
+//
+//
+//
+//    }
 
-
-
-    }
+    //MIME-Type Picker Default is binary download data
     public String getMIMEtype(String fileName){
-//        if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") !=0)
-//            fileName.substring(fileName.lastIndexOf(".")+1);
-//        System.out.println("File EXT: " + fileName);
         String[] ext = fileName.split("\\.");
         String extCheck = ext[ext.length-1];
         switch (extCheck){
@@ -143,6 +137,10 @@ public void setFiles(){
                 return "image/png";
             case "html":
                 return "text/html";
+            case "wml":
+                return "text/vnd.wap.wml";
+            case "xyz":
+                return "application/xyz";
             default :
                 return "application/octet-stream";
 
