@@ -2,7 +2,7 @@ package com.company;
 
 /*--------------------------------------------------------
 
-1. Name / Date: Hemanth Ande Oct 9
+1. Name / Date: Hemanth Ande Oct 22
 
 2. Java 1.8
 
@@ -21,8 +21,15 @@ Run it in folder you wish to serve
  b. Birthday.java
  c. FileList.java
  d. Main.java
+ e. BCLooper.java
+ f. BCWorker.java
+ h. myDataArray
+ e.
+
 
 5. Notes:
+
+Only tried running this on Windows 10 and on newest version of Firefox
 
 e.g.:
 
@@ -33,6 +40,7 @@ Unable to make all files/folders work in chrome
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.io.*;
 
 public class Main {
     private static int counter =0;
@@ -45,6 +53,9 @@ public class Main {
         try {
             ServerSocket servsock = new ServerSocket(port, q_len);
             System.out.println("My WebServer is Running on port "+port);
+            BCLooper AL = new BCLooper();
+            Thread t = new Thread(AL);
+            t.start();
             while (true){
                 sock = servsock.accept();
                 System.out.println(counter);
@@ -58,4 +69,4 @@ public class Main {
 
 
     }
-}
+ }
